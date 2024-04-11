@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 });
 
 app.get("/", (req, res) => {
-  pool.query("SELECT * FROM project", (err, result) => {
+  pool.execute("SELECT * FROM project", (err, result) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({
