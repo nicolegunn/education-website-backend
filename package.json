@@ -1,0 +1,19 @@
+{
+  "name": "2402-l4ft13-missionx-backend-t1",
+  "version": "1.0.0",
+  "description": "Welcome to our Node.js backend project! This guide will help you set up the project and understand the folder structure.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.9.4"
+  }
+}
