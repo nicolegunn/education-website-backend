@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
+const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT;
 
@@ -14,19 +15,41 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-app.get("/", (req, res) => {
+app.use(cors());
+
+app.get("/projects", (req, res) => {
   pool.execute("SELECT * FROM project", (err, result) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({
         errorMessage:
-          "An error occurred while fetching data from the database.",
+          "An error occurred while fetching project data from the database.",
         error: err,
       });
     } else {
       res.send(result);
     }
   });
+});
+
+app.get("/student/:id", (req, res) => {
+  const id = req.params.id;
+  pool.execute(
+    "SELECT * FROM student WHERE student_id = ?",
+    [id],
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching student data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 app
