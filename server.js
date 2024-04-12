@@ -52,6 +52,26 @@ app.get("/student/:id", (req, res) => {
   );
 });
 
+app.get("/teacher/:id", (req, res) => {
+  const id = req.params.id;
+  pool.execute(
+    "SELECT * FROM teacher WHERE teacher_id = ?",
+    [id],
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching teacher data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 app
   .listen(PORT, () => {
     console.log(`Server is alive on http://localhost:${PORT}`);
