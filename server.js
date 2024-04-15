@@ -72,6 +72,26 @@ app.get("/teacher/:id", (req, res) => {
   );
 });
 
+// Route for '/project-submissions' page
+app.get("/project-submissions", (req, res) => {
+  const id = req.params.id;
+  pool.execute(
+    "SELECT profile_pic, name, date_submitted, submission FROM student INNER JOIN student_projects ON student.student_id = student_projects.student_id WHERE date_submitted is NOT NULL ORDER BY date_submitted ASC;",
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching project submissions data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 app
   .listen(PORT, () => {
     console.log(`Server is alive on http://localhost:${PORT}`);
