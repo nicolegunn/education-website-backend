@@ -32,6 +32,7 @@ app.get("/projects", (req, res) => {
   });
 });
 
+
 app.get("/student/:id", (req, res) => {
   const id = req.params.id;
   pool.execute(
@@ -51,6 +52,30 @@ app.get("/student/:id", (req, res) => {
     }
   );
 });
+//----Video_tutorial page----------------------------------------
+
+app.get("/projects/:project_id/video_tutorial", (req, res) => {
+  const project_id = req.params.project_id;
+  pool.execute(
+    "SELECT video FROM project WHERE project_id = ?",
+    [project_id],
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching student data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//-----------------------------------------------------
+
 
 app
   .listen(PORT, () => {
