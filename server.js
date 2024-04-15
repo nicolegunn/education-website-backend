@@ -18,7 +18,7 @@ const pool = mysql.createPool({
 app.use(cors());
 
 app.get("/projects", (req, res) => {
-  pool.execute("SELECT * FROM project", (err, result) => {
+  pool.query("SELECT * FROM project", (err, result) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({
@@ -32,6 +32,7 @@ app.get("/projects", (req, res) => {
   });
 });
 
+
 app.get("/student/:id", (req, res) => {
   const id = req.params.id;
   pool.execute(
@@ -43,6 +44,70 @@ app.get("/student/:id", (req, res) => {
         return res.status(500).json({
           errorMessage:
             "An error occurred while fetching student data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+//----Video_tutorial page----------------------------------------
+
+app.get("/projects/:project_id/video_tutorial", (req, res) => {
+  const project_id = req.params.project_id;
+  pool.execute(
+    "SELECT video FROM project WHERE project_id = ?",
+    [project_id],
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching student data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//-----------------------------------------------------
+
+
+app.get("/teacher/:id", (req, res) => {
+  const id = req.params.id;
+  pool.execute(
+    "SELECT * FROM teacher WHERE teacher_id = ?",
+    [id],
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching teacher data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+// Route for '/project-submissions' page
+app.get("/project-submissions", (req, res) => {
+  const id = req.params.id;
+  pool.execute(
+    "SELECT profile_pic, name, date_submitted, submission FROM student INNER JOIN student_projects ON student.student_id = student_projects.student_id WHERE date_submitted is NOT NULL ORDER BY date_submitted ASC;",
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching project submissions data from the database.",
           error: err,
         });
       } else {
