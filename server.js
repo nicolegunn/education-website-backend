@@ -18,7 +18,7 @@ const pool = mysql.createPool({
 app.use(cors());
 
 app.get("/projects", (req, res) => {
-  pool.execute("SELECT * FROM project", (err, result) => {
+  pool.query("SELECT * FROM project", (err, result) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({
