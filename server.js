@@ -117,6 +117,17 @@ app.get("/project-submissions", (req, res) => {
   );
 });
 
+app.get('/student', (req, res) => {
+  const query = 'SELECT profile_pic, name, course FROM student;';
+  pool.execute(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    res.json(results);
+  });
+});
+
 app
   .listen(PORT, () => {
     console.log(`Server is alive on http://localhost:${PORT}`);
