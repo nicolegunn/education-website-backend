@@ -16,6 +16,37 @@ const pool = mysql.createPool({
 });
 
 app.use(cors());
+app.use(express.json());
+
+app.post("/login", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const userType = req.body.type;
+  let columns =
+    "teacher_id, name, email, password, school, profile_pic, date_of_birth, contact_number";
+  if (userType === "student") {
+    columns = columns + ", student_id, course";
+  }
+
+  if (email && password) {
+    pool.execute(
+      `SELECT ${columns} FROM ${userType} WHERE email = ? AND password = ?;`,
+      [email, password],
+      (err, result) => {
+        if (err) {
+          //handle error however you want to here:
+          return res.send({ err: err });
+        }
+        if (result.length > 0) {
+          return res.status(200).send(result);
+        } else {
+          //could send a status here instead e.g. res.sendStatus(404)
+          return res.send({ message: "User name or password incorrect" });
+        }
+      }
+    );
+  }
+});
 
 app.get("/projects", (req, res) => {
   pool.query("SELECT * FROM project", (err, result) => {
@@ -27,11 +58,10 @@ app.get("/projects", (req, res) => {
         error: err,
       });
     } else {
-      res.send(result);
+      return res.send(result);
     }
   });
 });
-
 
 app.get("/student/:id", (req, res) => {
   const id = req.params.id;
@@ -47,7 +77,7 @@ app.get("/student/:id", (req, res) => {
           error: err,
         });
       } else {
-        res.send(result);
+        return res.send(result);
       }
     }
   );
@@ -68,14 +98,13 @@ app.get("/projects/:project_id/video_tutorial", (req, res) => {
           error: err,
         });
       } else {
-        res.send(result);
+        return res.send(result);
       }
     }
   );
 });
 
 //-----------------------------------------------------
-
 
 app.get("/teacher/:id", (req, res) => {
   const id = req.params.id;
@@ -91,7 +120,7 @@ app.get("/teacher/:id", (req, res) => {
           error: err,
         });
       } else {
-        res.send(result);
+        return res.send(result);
       }
     }
   );
@@ -111,20 +140,20 @@ app.get("/project-submissions", (req, res) => {
           error: err,
         });
       } else {
-        res.send(result);
+        return res.send(result);
       }
     }
   );
 });
 
-app.get('/student', (req, res) => {
-  const query = 'SELECT profile_pic, name, course FROM student;';
+app.get("/student", (req, res) => {
+  const query = "SELECT profile_pic, name, course FROM student;";
   pool.execute(query, (error, results) => {
     if (error) {
       console.error(error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
-    res.json(results);
+    return res.json(results);
   });
 });
 
