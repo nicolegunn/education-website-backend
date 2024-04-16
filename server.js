@@ -23,7 +23,7 @@ app.post("/login", (req, res) => {
   const password = req.body.password;
   const userType = req.body.type;
   let columns =
-    "teacher_id, name, email, password, school, profile_pic, date_of_birth, contact_number";
+    "teacher_id, name, email, school, profile_pic, date_of_birth, contact_number";
   if (userType === "student") {
     columns = columns + ", student_id, course";
   }
@@ -41,7 +41,9 @@ app.post("/login", (req, res) => {
           return res.status(200).send(result);
         } else {
           //could send a status here instead e.g. res.sendStatus(404)
-          return res.send({ message: "User name or password incorrect" });
+          return res
+            .status(404)
+            .send({ message: "User name or password incorrect" });
         }
       }
     );
