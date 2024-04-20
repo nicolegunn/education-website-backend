@@ -52,7 +52,7 @@ app.get("/student/:id", (req, res) => {
     }
   );
 });
-//----Video_tutorial page----------------------------------------
+//----Route for Video_tutorial page----------------------------------------
 
 app.get("/projects/:project_id/video_tutorial", (req, res) => {
   const project_id = req.params.project_id;
@@ -73,7 +73,47 @@ app.get("/projects/:project_id/video_tutorial", (req, res) => {
     }
   );
 });
-
+//----------Route for Instructions Page-------------------------------------------
+app.get("/projects/:project_id/instructions", (req, res) => {
+  const project_id = req.params.project_id;
+  pool.execute(
+    "SELECT instructions FROM project WHERE project_id = ?",
+    [project_id],
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching student data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+//--------------Route for Learning Objective Page--------------------------------
+app.get("/projects/:project_id/learning_objective", (req, res) => {
+  const project_id = req.params.project_id;
+  pool.execute(
+    "SELECT learning_objective FROM project WHERE project_id = ?",
+    [project_id],
+    (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({
+          errorMessage:
+            "An error occurred while fetching student data from the database.",
+          error: err,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+     
 //-----------------------------------------------------
 
 
