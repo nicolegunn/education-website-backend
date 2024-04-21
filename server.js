@@ -148,6 +148,7 @@ app.get("/project-submissions", (req, res) => {
   );
 });
 
+//Route for 'student profiles' data
 app.get("/student", (req, res) => {
   const query = "SELECT profile_pic, name, course FROM student;";
   pool.execute(query, (error, results) => {
@@ -158,6 +159,20 @@ app.get("/student", (req, res) => {
     return res.json(results);
   });
 });
+
+app.get("/students-with-projects", (req, res) => {
+  const query = 'SELECT s.student_id, s.name, COUNT(p.date_completed) AS completed_projects_count ' +
+  'FROM student s ' +
+  'LEFT JOIN student_projects p ON s.student_id = p.student_id ' +
+  'GROUP BY s.student_id, s.name;'
+  pool.execute(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    return res.json(results);
+  })
+})
 
 app
   .listen(PORT, () => {
