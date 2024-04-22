@@ -55,27 +55,27 @@ app.post("/login", (req, res) => {
 
 ////Handle Signup//// 58-79////
 
-// app.post("/signup", (req, res) => {
-//   const { name, email, password, userType } = req.body;
-//   let sqlQuery;
+app.post("/signup", (req, res) => {
+  const { name, email, password, userType } = req.body;
+  let sqlQuery;
 
-//   if (userType === "student") {
-//     sqlQuery = `INSERT INTO student (name, email, password) VALUES (?, ?, ?)`;
-//   } else if (userType === "teacher") {
-//     sqlQuery = `INSERT INTO teacher (name, email, password) VALUES (?, ?, ?)`;
-//   }
+  if (userType === "student") {
+    sqlQuery = `INSERT INTO student (name, email, password) VALUES (?, ?, ?)`;
+  } else if (userType === "teacher") {
+    sqlQuery = `INSERT INTO teacher (name, email, password) VALUES (?, ?, ?)`;
+  }
 
-//   if (name && email && password) {
-//     pool.execute(sqlQuery, [name, email, password], (err, result) => {
-//       if (err) {
-//         return res.status(500).send({ err: err });
-//       }
-//       return res.status(200).send({ message: "User registered successfully" });
-//     });
-//   } else {
-//     return res.status(400).send({ message: "Please fill all the fields" });
-//   }
-// });
+  if (name && email && password) {
+    pool.execute(sqlQuery, [name, email, password], (err, result) => {
+      if (err) {
+        return res.status(500).send({ err: err });
+      }
+      return res.status(200).send({ message: "User registered successfully" });
+    });
+  } else {
+    return res.status(400).send({ message: "Please fill all the fields" });
+  }
+});
 
 /////////////////////////////////
 
