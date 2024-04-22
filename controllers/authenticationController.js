@@ -60,7 +60,6 @@ module.exports.postSignup = (req, res) => {
   if (type === "student") {
     columns = columns + ", course, teacher_id";
     parameters = parameters + ", ?, ?";
-    // values = values + `, "${req.body.course}", ${req.body.teacher_id}`;
     values = [...values, req.body.course, req.body.teacher_id];
   }
 
