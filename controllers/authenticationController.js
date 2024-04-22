@@ -19,15 +19,13 @@ module.exports.postLogin = (req, res) => {
   if (email && password) {
     pool.execute(sqlQuery, [email, password], (err, result) => {
       if (err) {
-        //handle error however you want to here:
-        return res.send({ err: err });
+        return res.status(500).send({ err: err });
       }
       if (result.length > 0) {
         return res.status(200).send(result);
       } else {
-        //could send a status here instead e.g. res.sendStatus(404)
         return res
-          .status(404)
+          .status(401)
           .send({ message: "User name or password incorrect" });
       }
     });
@@ -49,18 +47,27 @@ module.exports.postSignup = (req, res) => {
   let columns =
     "name, email, password, school, profile_pic, date_of_birth, contact_number";
   let parameters = "?, ?, ?, ?, ?, ?, ?";
-  let values = `"${name}", "${email}", "${password}", "${school}", "${profile_pic}", "${date_of_birth}", "${contact_number}"`;
+  let values = [
+    name,
+    email,
+    password,
+    school,
+    profile_pic,
+    date_of_birth,
+    contact_number,
+  ];
 
   if (type === "student") {
     columns = columns + ", course, teacher_id";
     parameters = parameters + ", ?, ?";
-    values = values + `, "${req.body.course}", ${req.body.teacher_id}`;
+    // values = values + `, "${req.body.course}", ${req.body.teacher_id}`;
+    values = [...values, req.body.course, req.body.teacher_id];
   }
 
-  const sqlQuery = `INSERT INTO ${type} (${columns}) VALUES(${values});`;
+  const sqlQuery = `INSERT INTO ${type} (${columns}) VALUES(${parameters});`;
 
   if (name && email && password) {
-    pool.query(sqlQuery, (err, result) => {
+    pool.execute(sqlQuery, values, (err, result) => {
       if (err) {
         return res.status(500).send({ err: err });
       }
